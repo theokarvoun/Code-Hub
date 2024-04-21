@@ -1,5 +1,5 @@
 import subprocess
-from tkinter import filedialog, ttk
+from tkinter import filedialog
 import customtkinter as ctk
 import tkinter as tk
 import webbrowser as web
@@ -31,9 +31,25 @@ def new() -> None:
 
     name_entry = ctk.CTkEntry(win, font=("Colibri", 15))
     name_entry.insert(0, "Enter Project Name")  # Insert default text
-    name_entry.pack(side="bottom", padx=10, pady=10)
+    name_entry.pack(side="top", padx=10, pady=10)
 
     win.mainloop()
+
+def cfg_manager(mode, data=None):
+    if mode == "read":
+        with open("config.cfg", "r") as cfg:
+            return cfg.read().splitlines()
+    elif mode == "append":
+        with open("config.cfg", "a") as cfg:
+            cfg.write(data + "\n")
+    elif mode == "remove":
+        with open("config.cfg", "r+") as cfg:
+            lines = cfg.readlines()
+            cfg.seek(0)
+            for line in lines:
+                if line.strip() != data:
+                    cfg.write(line)
+            cfg.truncate()
 
 def browse_directory() -> str:
     """Open a file dialog to browse the file system and select a directory."""
@@ -46,7 +62,8 @@ def browse_directory() -> str:
 def make_project(name,lang):
     command = "ch -init " + name + " " + lang
     print(command)
-    os.system(command=command)
+    if os.system(command=command) == 0:
+        cfg_manager(mode="append",data=name)
 
 def version() -> None:
     try:
@@ -70,6 +87,10 @@ def versionPresenter(buffer) -> None:
     tempwindow.mainloop()
 
 def main() -> None:
+    # Read project names from config.cfg
+    project_names = cfg_manager(mode="read")
+
+    # Initialize the GUI
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
     
@@ -84,15 +105,27 @@ def main() -> None:
     # Create custom menu items using standard tkinter widgets
     version_button = ctk.CTkButton(menubar_frame, text="Version", command=version)
     version_button.pack(side="bottom", padx=10, pady=5)
-    new_button = ctk.CTkButton(menubar_frame,text="New",command=new)
-    new_button.pack(side="top",padx=10,pady=5)
+    new_button = ctk.CTkButton(menubar_frame, text="New", command=new)
+    new_button.pack(side="top", padx=10, pady=5)
 
     # Pack the menu bar frame to the left side
     menubar_frame.pack(side="left", fill="y")
 
+    # Create a dropdown menu for projects
+    project_menu = ctk.CTkComboBox(window, values=project_names,width=1000)
+    project_menu.set("Select Project")
+
+    if project_names:
+     # If there are projects available, set the ComboBox values
+        project_menu['values'] = project_names
+    else:
+    # If there are no projects available, display "No Projects Available"
+        project_menu['values'] = ["No Projects Available"]
+    project_menu.pack(pady=10)
+    vscode_button = ctk.CTkButton(window,text="Open In VSCode",width=1000,command=lambda:(os.system(command="code "+project_menu.get())))
+    vscode_button.pack(padx=10,pady=10)
+
     window.mainloop()
-
-
 
 if __name__ == "__main__":
     main()
