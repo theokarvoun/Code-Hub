@@ -3,37 +3,35 @@ from tkinter import filedialog, ttk
 import customtkinter as ctk
 import tkinter as tk
 import webbrowser as web
+import os
 
 def new() -> None:
     win = ctk.CTk()
-    win.geometry("500x300")
+    win.geometry("500x200")
     win.title("New Project")
     label1 = ctk.CTkLabel(win, text="Select Directory", font=("Colibri", 15))
     label1.pack(side="left")
-    dir_button = ctk.CTkButton(win, text="Browse", command=lambda: label1.configure(text=browse_directory()))
+    dir_button = ctk.CTkButton(win, text="Browse", command=lambda: (label1.configure(text=browse_directory())))
     dir_button.pack(side="right")
-    name_entry = ctk.CTkEntry(win, font=("Colibri", 15))
-    name_entry.insert(0, "Enter Project Name")  # Insert default text
-    name_entry.pack(side="bottom", padx=10, pady=10)
-
-    # Create custom dropdown menu for language selection
-    languages = ["Python", "C", "C++", "Java", "JavaScript"]  # List of languages
-    selected_language = tk.StringVar()  # Variable to store selected language
-    selected_language.set(languages[0])  # Set default value
+    create_button = ctk.CTkButton(win, text="Create", command=lambda: (make_project(name=label1.cget("text")+"/"+name_entry.get(), lang=lang_menu.get())))
+    create_button.pack(side="bottom", padx=10, pady=10)
+    
+    # List of languages
+    languages = ["Python", "C", "C++", "Java", "JavaScript"]
 
     # Calculate the width of the longest item
     max_length = max(len(lang) for lang in languages)
-    # Set the width of the dropdown menu based on the length of the longest item
-    menu_width = max_length * 8  # Adjust this multiplier as needed
-    
-    # Style the dropdown menu
-    optionmenu_style = ttk.Style()
-    optionmenu_style.theme_use("clam")  # Use a different theme to match the rest of the app
-    optionmenu_style.configure("TMenubutton", font=("Colibri", 12), padding=5)
 
-    language_menu = tk.OptionMenu(win, selected_language, *languages)
-    language_menu.config(width=menu_width)  # Set the width of the menu
-    language_menu.pack(side="bottom", padx=10, pady=10)
+    # Set the width of the ComboBox based on the length of the longest item
+    combo_width = max_length * 12  # Adjust this multiplier as needed
+
+    # Create custom dropdown menu for language selection
+    lang_menu = ctk.CTkComboBox(win, values=languages, width=combo_width)
+    lang_menu.pack(side="bottom", padx=10, pady=10)
+
+    name_entry = ctk.CTkEntry(win, font=("Colibri", 15))
+    name_entry.insert(0, "Enter Project Name")  # Insert default text
+    name_entry.pack(side="bottom", padx=10, pady=10)
 
     win.mainloop()
 
@@ -44,6 +42,11 @@ def browse_directory() -> str:
     
     directory_path = filedialog.askdirectory()
     return directory_path
+
+def make_project(name,lang):
+    command = "ch -init " + name + " " + lang
+    print(command)
+    os.system(command=command)
 
 def version() -> None:
     try:

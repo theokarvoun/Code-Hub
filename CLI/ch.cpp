@@ -18,7 +18,7 @@ class Initializer{
             this->name = name;
         }
         void folderMaker(){
-            if (!mkdir(name.c_str())){
+            if (mkdir(name.c_str())){
                 cerr << "Error creating folder\n";
                 return;
             }
