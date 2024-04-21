@@ -81,7 +81,7 @@ int main(int argc, char **argv){
     }
     if (strcmp(argv[1],"-help")==0){
         cout << "-help: Shows commands\n" << "-version: Shows current version\n";
-        cout << "-init <projectname> <language>: creates a new project for the desired programming language" << endl;
+        cout << "-init <projectname> <language>: Creates a new project for the desired programming language" << endl;
     }
     if (strcmp(argv[1],"-version")==0){
         cout << version << endl;
