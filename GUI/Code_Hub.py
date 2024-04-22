@@ -13,7 +13,7 @@ def new() -> None:
     label1.pack(side="left")
     dir_button = ctk.CTkButton(win, text="Browse", command=lambda: (label1.configure(text=browse_directory())))
     dir_button.pack(side="right")
-    create_button = ctk.CTkButton(win, text="Create", command=lambda: (make_project(name=label1.cget("text")+"/"+name_entry.get(), lang=lang_menu.get())))
+    create_button = ctk.CTkButton(win, text="Create", command=lambda: (make_project(name=label1.cget("text")+"/"+name_entry.get(), lang=lang_menu.get()),win.destroy()))
     create_button.pack(side="bottom", padx=10, pady=10)
     
     # List of languages
@@ -51,6 +51,10 @@ def cfg_manager(mode, data=None):
                     cfg.write(line)
             cfg.truncate()
 
+def add():
+    dir = browse_directory()
+    cfg_manager(mode="append",data=dir)
+
 def browse_directory() -> str:
     """Open a file dialog to browse the file system and select a directory."""
     root = tk.Tk()
@@ -61,7 +65,6 @@ def browse_directory() -> str:
 
 def make_project(name,lang):
     command = "ch -init " + name + " " + lang
-    print(command)
     if os.system(command=command) == 0:
         cfg_manager(mode="append",data=name)
 
@@ -70,7 +73,7 @@ def version() -> None:
         proc = subprocess.Popen("ch -version", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         if stdout:
-            versionPresenter(stdout.decode())  # Decode bytes to string
+            versionPresenter(stdout.decode()+"\nGUI Version alpha-v0.0.1")  # Decode bytes to string
         else:
             print("No output received.")
     except Exception as e:
@@ -98,15 +101,16 @@ def main() -> None:
     window = ctk.CTk()
     window.geometry("500x500")
     window.title("Code Hub")
-
     # Create a custom frame for the menu bar
     menubar_frame = ctk.CTkFrame(window)
 
     # Create custom menu items using standard tkinter widgets
     version_button = ctk.CTkButton(menubar_frame, text="Version", command=version)
     version_button.pack(side="bottom", padx=10, pady=5)
-    new_button = ctk.CTkButton(menubar_frame, text="New", command=new)
+    new_button = ctk.CTkButton(menubar_frame, text="New", command=lambda:(new(),project_menu.pack(pady=10)))
     new_button.pack(side="top", padx=10, pady=5)
+    add_button = ctk.CTkButton(menubar_frame,text="Add",command=add)
+    add_button.pack(side="top",padx=10,pady=5)
 
     # Pack the menu bar frame to the left side
     menubar_frame.pack(side="left", fill="y")
@@ -122,7 +126,7 @@ def main() -> None:
     # If there are no projects available, display "No Projects Available"
         project_menu['values'] = ["No Projects Available"]
     project_menu.pack(pady=10)
-    vscode_button = ctk.CTkButton(window,text="Open In VSCode",width=1000,command=lambda:(os.system(command="code "+project_menu.get())))
+    vscode_button = ctk.CTkButton(window,text="Open In VSCode",width=800,command=lambda:(os.system(command="code "+project_menu.get())))
     vscode_button.pack(padx=10,pady=10)
 
     window.mainloop()
