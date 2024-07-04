@@ -1,2 +1,20 @@
+def settings():
+    ctk.set_appearance_mode("System")
+    ctk.set_default_color_theme("blue")
+    
+    settingswindow = ctk.CTk()
+    version_panel = ctk.CTkFrame(settingswindow,fg_color=settingswindow._fg_color)
+    version_label_CLI = ctk.CTkLabel(version_panel,text=version())
+    version_label_CLI.pack(padx=10,pady=10)
+    version_label_GUI = ctk.CTkLabel(version_panel,text="GUI Version alpha-v0.1.0")
+    version_label_GUI.pack(padx=10,pady=10)
+    GitHubButton = ctk.CTkButton(version_panel, text="Go To GitHub", command=lambda: (web.open_new_tab("https://github.com/theokarvoun/Code-Hub")))
+    GitHubButton.pack(padx=10, pady=10)
+    settingswindow.geometry("500x500")
+    settingswindow.title("Settings")
+    menu = ctk.CTkFrame(settingswindow)
+    menu.pack(side="left", fill="y")
+    version_button = ctk.CTkButton(menu, text="Version",fg_color=menu._fg_color,corner_radius=0, command=lambda:(version_panel.pack(fill="both",expand=True)))
+    version_button.pack(side="bottom", padx=0, pady=0)
 
-    panel1 = ctk.CTkFrame(settingswindow)
+    settingswindow.mainloop()

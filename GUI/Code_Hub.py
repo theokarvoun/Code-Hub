@@ -111,6 +111,7 @@ def update_project_menu(project_menu):
         project_menu.set("No Projects Available")
 
 def settings():
+
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
     
@@ -126,19 +127,9 @@ def settings():
     settingswindow.title("Settings")
     menu = ctk.CTkFrame(settingswindow)
     menu.pack(side="left", fill="y")
-    version_button = ctk.CTkButton(menu, text="Version",fg_color=menu._fg_color, command=lambda:(version_panel.pack(fill="both",expand=True)))
-    version_button.pack(side="bottom", padx=5, pady=5)
+    version_button = ctk.CTkButton(menu, text="Version",fg_color=menu._fg_color,corner_radius=0, command=lambda:(version_panel.pack(fill="both",expand=True),version_button.configure(fg_color=version_button._hover_color)))
     
-    #panel1 = ctk.CTkFrame(settingswindow,width=500,height=500,border_width=500,fg_color=settingswindow._fg_color)
-    #panel2 = ctk.CTkFrame(settingswindow,width=500,height=500,border_width=500,fg_color=settingswindow._fg_color)
-    #label1 = ctk.CTkLabel(panel1, text="This is panel1")
-    #label1.pack()
-    #label2 = ctk.CTkLabel(panel2, text="This is panel2")
-    #label2.pack()
-    #button1 = ctk.CTkButton(menu,fg_color=menu._fg_color,text="testing1",command=lambda:(panel2.pack_forget(),panel1.pack(fill="both",expand=True)) )
-    #button1.pack(side="top",padx=0,pady=0)
-    #button2 = ctk.CTkButton(menu,fg_color=menu._fg_color,text="testing2",command=lambda:(panel1.pack_forget(),panel2.pack(fill="both",expand=True)))
-    #button2.pack(side="top",padx=0,pady=0)
+    version_button.pack(side="bottom", padx=0, pady=0)
 
     settingswindow.mainloop()
 
