@@ -4,6 +4,7 @@ import customtkinter as ctk
 import tkinter as tk
 import webbrowser as web
 import os
+from PIL import Image
 
 def new(project_menu) -> None:
     def browse_directory() -> str:
@@ -81,7 +82,7 @@ def version() -> None:
         proc = subprocess.Popen("ch -version", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         if stdout:
-            versionPresenter(stdout.decode() + "\nGUI Version alpha-v0.0.1")
+            versionPresenter(stdout.decode() + "\nGUI Version alpha-v0.1.0")
         else:
             print("No output received.")
     except Exception as e:
@@ -106,6 +107,20 @@ def update_project_menu(project_menu):
         project_menu.configure(values=["No Projects Available"])
         project_menu.set("No Projects Available")
 
+def settings():
+    ctk.set_appearance_mode("System")
+    ctk.set_default_color_theme("blue")
+    
+    settingswindow = ctk.CTk()
+    settingswindow.geometry("500x500")
+    settingswindow.title("Settings")
+    menu = ctk.CTkFrame(settingswindow)
+    menu.pack(side="left", fill="y")
+    version_button = ctk.CTkButton(menu, text="Version", command=version)
+    version_button.pack(side="bottom", padx=10, pady=5)
+
+    settingswindow.mainloop()
+
 def main() -> None:
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
@@ -121,8 +136,12 @@ def main() -> None:
     project_menu.set("Select Project")
     project_menu.pack(pady=10)
 
-    version_button = ctk.CTkButton(menubar_frame, text="Version", command=version)
-    version_button.pack(side="bottom", padx=10, pady=5)
+    # Load gear icon image
+    gear_icon = Image.open("gear.png")
+    gear_icon = ctk.CTkImage(gear_icon, size=(20, 20))
+
+    settings_button = ctk.CTkButton(menubar_frame, image=gear_icon,text="", command=settings)
+    settings_button.pack(side="bottom", padx=10, pady=5)
     new_button = ctk.CTkButton(menubar_frame, text="New", command=lambda: new(project_menu))
     new_button.pack(side="top", padx=10, pady=5)
     add_button = ctk.CTkButton(menubar_frame, text="Add", command=lambda: add(project_menu))
