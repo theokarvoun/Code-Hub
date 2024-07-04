@@ -77,16 +77,19 @@ def make_project(name, lang):
     if os.system(command) == 0:
         cfg_manager(mode="append", data=name)
 
-def version() -> None:
+def version() -> str:
     try:
         proc = subprocess.Popen("ch -version", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
         if stdout:
-            versionPresenter(stdout.decode() + "\nGUI Version alpha-v0.1.0")
+            #versionPresenter(stdout.decode() + "\nGUI Version alpha-v0.1.0")
+            return stdout.decode()
         else:
             print("No output received.")
+            return None
     except Exception as e:
         print("Error:", e)
+        return None
 
 def versionPresenter(buffer) -> None:
     tempwindow = ctk.CTk()
@@ -112,12 +115,30 @@ def settings():
     ctk.set_default_color_theme("blue")
     
     settingswindow = ctk.CTk()
+    version_panel = ctk.CTkFrame(settingswindow,fg_color=settingswindow._fg_color)
+    version_label_CLI = ctk.CTkLabel(version_panel,text=version())
+    version_label_CLI.pack(padx=10,pady=10)
+    version_label_GUI = ctk.CTkLabel(version_panel,text="GUI Version alpha-v0.1.0")
+    version_label_GUI.pack(padx=10,pady=10)
+    GitHubButton = ctk.CTkButton(version_panel, text="Go To GitHub", command=lambda: (web.open_new_tab("https://github.com/theokarvoun/Code-Hub")))
+    GitHubButton.pack(padx=10, pady=10)
     settingswindow.geometry("500x500")
     settingswindow.title("Settings")
     menu = ctk.CTkFrame(settingswindow)
     menu.pack(side="left", fill="y")
-    version_button = ctk.CTkButton(menu, text="Version", command=version)
-    version_button.pack(side="bottom", padx=10, pady=5)
+    version_button = ctk.CTkButton(menu, text="Version",fg_color=menu._fg_color, command=lambda:(version_panel.pack(fill="both",expand=True)))
+    version_button.pack(side="bottom", padx=5, pady=5)
+    
+    #panel1 = ctk.CTkFrame(settingswindow,width=500,height=500,border_width=500,fg_color=settingswindow._fg_color)
+    #panel2 = ctk.CTkFrame(settingswindow,width=500,height=500,border_width=500,fg_color=settingswindow._fg_color)
+    #label1 = ctk.CTkLabel(panel1, text="This is panel1")
+    #label1.pack()
+    #label2 = ctk.CTkLabel(panel2, text="This is panel2")
+    #label2.pack()
+    #button1 = ctk.CTkButton(menu,fg_color=menu._fg_color,text="testing1",command=lambda:(panel2.pack_forget(),panel1.pack(fill="both",expand=True)) )
+    #button1.pack(side="top",padx=0,pady=0)
+    #button2 = ctk.CTkButton(menu,fg_color=menu._fg_color,text="testing2",command=lambda:(panel1.pack_forget(),panel2.pack(fill="both",expand=True)))
+    #button2.pack(side="top",padx=0,pady=0)
 
     settingswindow.mainloop()
 
