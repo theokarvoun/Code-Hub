@@ -6,7 +6,7 @@
 
 using std::cout, std::string,std::cerr, std::endl;
 
-const string version = "Code Hub CLI Version alpha-v0.0.1";
+const string version = "Code Hub CLI Version alpha-v0.1.0";
 
 class Initializer{
     private:
@@ -40,39 +40,54 @@ class Initializer{
                 return;
             }
         }
-        void projectInit(){
+        void projectInit(char* main_name){
             std::fstream main;
             string temp = name;
             temp.append("\\src");
             if ((lang.compare("python")==0)||(lang.compare("Python")==0)){
-                temp.append("\\main.py");
+                temp.append("\\");
+                temp.append(main_name);
+                temp.append(".py");
+                //cout << temp;
                 main.open(temp,std::ios::out);
                 return;
             }
             if ((lang.compare("C++")==0)||(lang.compare("c++")==0)||(lang.compare("cpp")==0)){
-                temp.append("\\main.cpp");
+                temp.append("\\");
+                temp.append(main_name);
+                temp.append(".cpp");
+                //cout << temp;
                 main.open(temp,std::ios::out);
                 return;
             }
             if ((lang.compare("C")==0)||(lang.compare("c")==0)){
-                temp.append("\\main.c");
+                temp.append("\\");
+                temp.append(main_name);
+                temp.append(".c");
+                //cout << temp;
                 main.open(temp,std::ios::out);
                 return;
             }
             if ((lang.compare("Java")==0)||(lang.compare("java")==0)){
-                temp.append("\\main.java");
+                temp.append("\\");
+                temp.append(main_name);
+                temp.append(".java");
+                //cout << temp;
                 main.open(temp,std::ios::out);
                 return;
             }
             if ((lang.compare("JavaScript")==0)||(lang.compare("Javascript")==0)||(lang.compare("javascript")==0)){
-                temp.append("\\main.js");
+                temp.append("\\");
+                temp.append(main_name);
+                temp.append(".js");
+                //cout << temp;
                 main.open(temp,std::ios::out);
                 return;
             }
         }
 };
 
-void projectMaker(string projectName, string language);
+void projectMaker(string projectName, string language, char* main_name);
 
 int main(int argc, char **argv){
     if (argv[1] == NULL){
@@ -86,14 +101,14 @@ int main(int argc, char **argv){
     if (strcmp(argv[1],"-version")==0){
         cout << version << endl;
     }
-    if ((strcmp(argv[1],"-init")==0) && (argc == 4)){
-        projectMaker((string)argv[2],(string)argv[3]);
+    if ((strcmp(argv[1],"-init")==0) && (argc == 5)){
+        projectMaker((string)argv[2],(string)argv[3],argv[4]);
     }
 }
 
-void projectMaker(string projectName, string language){
+void projectMaker(string projectName, string language, char* main_name){
     Initializer init = Initializer(projectName,language);
     init.folderMaker();
     init.subfolderMaker();
-    init.projectInit();
+    init.projectInit(main_name);
 }
