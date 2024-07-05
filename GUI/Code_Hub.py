@@ -51,7 +51,7 @@ def cfg_manager(mode, data):
             return cfg.read().splitlines()
     elif mode == "write":
         with open("config.cfg", "w") as cfg:
-            cfg.write(data + "\n")
+            cfg.write(data)
 
 def projects_manager(mode, data=None):
     if mode == "read":
@@ -98,7 +98,10 @@ def update_project_menu(project_menu):
         project_menu.set("No Projects Available")
 
 def settings():
-
+    def button_pressed(button):
+        button.configure(fg_color=button._hover_color)
+    def button_released(button):
+        button.configure(fg_color=menu._fg_color)
     ctk.set_appearance_mode("System")
     ctk.set_default_color_theme("blue")
 
@@ -114,9 +117,17 @@ def settings():
     settingswindow.title("Settings")
     menu = ctk.CTkFrame(settingswindow)
     menu.pack(side="left", fill="y")
-    version_button = ctk.CTkButton(menu, text="Version", fg_color=menu._fg_color, corner_radius=0, command=lambda: (version_panel.pack(fill="both", expand=True), version_button.configure(fg_color=version_button._hover_color)))
+    version_button = ctk.CTkButton(menu, text="Version", fg_color=menu._fg_color, corner_radius=0, command=lambda: (project_settings_panel.pack_forget(),version_panel.pack(fill="both", expand=True), button_released(project_button),button_pressed(version_button)))
     version_button.pack(side="bottom", padx=0, pady=0)
-
+    project_settings_panel = ctk.CTkFrame(settingswindow,fg_color=settingswindow._fg_color)
+    mainLabel = ctk.CTkLabel(project_settings_panel,text="Default main name: ")
+    mainLabel.pack(side="left",padx=5)
+    inputBox = ctk.CTkEntry(project_settings_panel,placeholder_text=cfg_manager(mode="read",data=None).pop())
+    inputBox.pack(side="right",padx=5)
+    save_button = ctk.CTkButton(project_settings_panel,text="Save",command=lambda:(cfg_manager(mode="write",data=inputBox.get())))
+    save_button.pack(side="bottom",padx=10,pady=15)
+    project_button = ctk.CTkButton(menu,text="Projects",fg_color=menu._fg_color,corner_radius=0,command=lambda: (version_panel.pack_forget(),project_settings_panel.pack(fill="both", expand=True), button_released(version_button),button_pressed(project_button)))
+    project_button.pack(side="top")
     settingswindow.mainloop()
 
 def main() -> None:
